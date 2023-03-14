@@ -9,5 +9,14 @@ router.get('/', function(req, res, next) {
   res.send('respond with a resource');
 });
 
+router.get("/", getUsuarios);
+
+router.post("/", createUsuario);
+
+router.put("/:usuario_id", updateUsuario);
+
+router.delete("/:usuario_id", deleteUsuario);
+
+router.get("/:usuario_id", getUsuario);
 
 module.exports = router;
