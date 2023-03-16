@@ -13,7 +13,7 @@ const Usuario= sequelize.define('usuario',{
      },
   usuario:{
       type:DataTypes.STRING,
-      allowNull:false
+      primaryKey:true
   },
   clave: {
     type:DataTypes.STRING,
