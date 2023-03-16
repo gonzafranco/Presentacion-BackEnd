@@ -5,13 +5,8 @@ const Usuario = require("../models/usuario");
 exports.getUsuarios = async (req, res) => {
     try {
         const usuarios = await Usuario.findAll();
-        console.log("----------" + usuarios);
-
-        return res.render('index', {
-            usuarios
-        })
-
-        // res.json(projects);
+        
+         res.status(200).json(usuarios);
     } catch (error) {
         return res.status(500).json({ message: error.message });
     }
