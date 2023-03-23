@@ -1,7 +1,7 @@
 var express = require("express");
 var router = express.Router();
-const bcrypt=require('bcrypt');
-const jwt=require('jsonwebtoken')
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 const users = require("../models/usuario");
 
@@ -23,7 +23,7 @@ router.post("/register", async (req, res) => {
   }
 
   try {
-    const isEmailExist = await users.findOne({ where:{email} });
+    const isEmailExist = await users.findOne({ where: { email } });
     if (isEmailExist) {
       return res.status(400).json({ error: "Email ya registrado" });
     }
@@ -32,11 +32,10 @@ router.post("/register", async (req, res) => {
   }
 
   try {
-
     const newUsuario = await users.create({
-        usuario,
-        email,
-        clave
+      usuario,
+      email,
+      clave,
     });
     return res.status(200).json({ menssage: "usuario registrado" });
   } catch (error) {
@@ -44,52 +43,48 @@ router.post("/register", async (req, res) => {
   }
 });
 
-
 router.post("/login", async (req, res) => {
-    const { usuario, clave } = req.body;
-    let usuarioExiste;
-    if (usuario === "" || clave === "") {
-      return res.status(404).json({ message: "porfavor rellenar campos" });
-    }
-  
-    try {
-      usuarioExiste = await users.findOne({ where: { usuario } });
-     
-      if (!usuarioExiste) {
-        return res.status(404).json({ message: "Usuario no existe" });
-      }
-    } catch (error) {
-      return res.status(500).json({ message: error.message });
-    }
+  const { usuario, clave } = req.body;
+  let usuarioExiste;
+  if (usuario === "" || clave === "") {
+    return res.status(404).json({ message: "porfavor rellenar campos" });
+  }
 
-    //quitar cuando se encrypte contraceña
-    if(req.body.clave != usuarioExiste.clave)
+  try {
+    usuarioExiste = await users.findOne({ where: { usuario } });
+
+    if (!usuarioExiste) {
+      return res.status(404).json({ message: "Usuario no existe" });
+    }
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+
+  //quitar cuando se encrypte contraceña
+  if (req.body.clave != usuarioExiste.clave) {
+    return res.status(400).json({ error: "contraseña no válida" });
+  }
+
+  //cuando se guarde la constraseña encryptada se habilita
+  // const validPassword = await bcrypt.compare(req.body.clave, usuarioExiste.clave);
+  // if (!validPassword){
+  //     return res.status(400).json({ error: 'contraseña no válida' });
+  // }
+
+  //traer el rol de la base de datos
+  const token = jwt.sign(
     {
-        return res.status(400).json({ error: 'contraseña no válida' });
-    }
+      name: usuarioExiste.usuario,
+      id: usuarioExiste.usuario_id,
+      rol: ["admin", "jefe"],
+    },
+    process.env.TOKEN_SECRET
+  );
 
-
-    //cuando se guarde la constraseña encryptada se habilita
-    // const validPassword = await bcrypt.compare(req.body.clave, usuarioExiste.clave);
-    // if (!validPassword){
-    //     return res.status(400).json({ error: 'contraseña no válida' });
-    // } 
-    
-
-
-    //traer el rol de la base de datos
-    const token = jwt.sign({
-        name: usuarioExiste.usuario,
-        id: usuarioExiste.usuario_id,
-        rol:["admin","jefe"]
-    }, process.env.TOKEN_SECRET)
-    
-    res.header('auth-token', token).json({
-        error: null,
-        data: {token}
-    })
-  
+  res.header("auth-token", token).json({
+    error: null,
+    data: { token },
+  });
 });
-
 
 module.exports = router;

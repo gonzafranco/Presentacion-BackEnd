@@ -28,20 +28,6 @@ exports.getUsuario = async (req, res) => {
 };
 
 
-exports.createUsuario = async (req, res) => {
-    try {
-        const { usuario, clave } = req.body;
-
-        const newUsuario = await Usuario.create({
-            usuario,
-            clave
-        });
-        console.log(newUsuario);
-        res.send(newUsuario);
-    } catch (error) {
-        return res.status(500).json({ message: error.message });
-    }
-};
 
 
 exports.updateUsuario = async (req, res) => {
