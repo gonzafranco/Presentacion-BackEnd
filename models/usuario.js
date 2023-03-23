@@ -1,19 +1,21 @@
 const Sequelize = require('sequelize');
 const sequelize= require('../database/database');
 
+const tarea = require('./tarea')
+
 
 const {DataTypes}=require('sequelize');
+const Tarea = require('./tarea');
 
 
 const Usuario= sequelize.define('usuario',{
-  usuario_id:{
+  id:{
       type:DataTypes.INTEGER,
       primaryKey:true,
       autoIncrement:true
      },
   usuario:{
-      type:DataTypes.STRING,
-      primaryKey:true
+      type:DataTypes.STRING
   },
   clave: {
     type:DataTypes.STRING,
@@ -29,5 +31,16 @@ const Usuario= sequelize.define('usuario',{
 {
   timestamps: false,
   })
+
+
+Usuario.hasMany(tarea,{
+    foreingKey: 'usuarioId',
+    sourceKey: 'id'
+})
+
+tarea.belongsTo(Usuario,{
+    foreignKey:'usuarioId',
+    targetKey:'id'
+})
 
 module.exports = Usuario;

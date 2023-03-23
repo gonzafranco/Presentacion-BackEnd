@@ -5,10 +5,12 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const sequelize = require('./database/database');
 const usuario = require('./models/usuario');
+const tarea = require('./models/tarea');
 
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+var tareaRouter = require('./routes/tarea');
 
 var app = express();
 
@@ -24,6 +26,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use('/tarea', tareaRouter);
+
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
