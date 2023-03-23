@@ -2,12 +2,12 @@ var express = require('express');
 var router = express.Router();
 
 const { createUsuario, getUsuarios, updateUsuario, deleteUsuario, getUsuario } = require('../controller/usuariocontroller');
-const {verifyToken, esAdmin}=require('../controller/auth-controller')
+const {verifyToken,esAdmin}=require('../controller/auth-controller')
 
 /* GET users listing. */
 
 
-router.get("/",[verifyToken, esAdmin], getUsuarios);
+router.get("/",[verifyToken,esAdmin], getUsuarios);
 
 router.post("/", createUsuario);
 

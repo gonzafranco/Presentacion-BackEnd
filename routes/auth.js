@@ -75,9 +75,13 @@ router.post("/login", async (req, res) => {
     //     return res.status(400).json({ error: 'contraseña no válida' });
     // } 
     
+
+
+    //traer el rol de la base de datos
     const token = jwt.sign({
-        name: users.name,
-        id: users.usuario_id
+        name: usuarioExiste.usuario,
+        id: usuarioExiste.usuario_id,
+        rol:["admin","jefe"]
     }, process.env.TOKEN_SECRET)
     
     res.header('auth-token', token).json({
