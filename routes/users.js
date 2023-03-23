@@ -11,10 +11,10 @@ router.get("/",verifyToken, getUsuarios);
 
 router.post("/", createUsuario);
 
-router.put("/:usuario_id", updateUsuario);
+router.put("/:id", updateUsuario);
 
-router.delete("/:usuario_id", deleteUsuario);
+router.delete("/:id", deleteUsuario);
 
-router.get("/:usuario_id", getUsuario);
+router.get("/:id", getUsuario);
 
 module.exports = router;
