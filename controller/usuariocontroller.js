@@ -15,8 +15,8 @@ exports.getUsuarios = async (req, res) => {
 exports.getUsuario = async (req, res) => {
 
     try {
-        const { usuario_id } = req.params;
-        const usuario = await Usuario.findOne({ where: { usuario_id } });
+        const { id } = req.params;
+        const usuario = await Usuario.findOne({ where: { id } });
 
         if (!usuario) {
             return res.status(404).json({ message: "Usuario no existe" })
@@ -36,8 +36,8 @@ exports.createUsuario = async (req, res) => {
             usuario,
             clave
         });
-        console.log(newUsuario);
-        res.send(newUsuario);
+
+        res.status(200).send(newUsuario);
     } catch (error) {
         return res.status(500).json({ message: error.message });
     }
@@ -46,16 +46,16 @@ exports.createUsuario = async (req, res) => {
 
 exports.updateUsuario = async (req, res) => {
     try {
-        const { usuario_id } = req.params;
+        const { id } = req.params;
 
         const { usuario, clave } = req.body;
 
-        const usuario_s = await Usuario.findByPk(usuario_id);
+        const usuario_s = await Usuario.findByPk(id);
         usuario_s.usuario = usuario;
         usuario_s.clave = clave;
         await usuario_s.save();
 
-        res.json(usuario_s);
+        res.status(200).json(usuario_s);
     } catch (error) {
         return res.status(500).json({ message: error.message });
     }
@@ -64,17 +64,16 @@ exports.updateUsuario = async (req, res) => {
 
 exports.deleteUsuario = async (req, res) => {
     try {
-        const { usuario_id } = req.params;
+        const { id } = req.params;
 
         const usuario_eliminado = await Usuario.destroy({
             where: {
-                usuario_id,
+                id,
             },
         });
-        res.json({message:`usuario con id ${usuario_id} eliminado`});
+        res.json({message:`usuario con id ${id} eliminado`});
         res.sendStatus(204);
         
-
     } catch (error) {
         return res.status(500).json({ message: error.message });
     }
