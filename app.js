@@ -7,12 +7,14 @@ var cors = require('cors');
 const sequelize = require('./database/database');
 const usuario = require('./models/usuario');
 const tarea = require('./models/tarea');
+const rol = require('./models/rol');
 
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var tareaRouter = require('./routes/tarea');
-let authRouter=require('./routes/auth');
+let authRouter= require('./routes/auth');
+let rolRouter = require('./routes/rol');
 
 
 var app = express();
@@ -32,6 +34,7 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/tarea', tareaRouter);
 app.use('/auth',authRouter);
+app.use('/rol',rolRouter);
 
 
 // catch 404 and forward to error handler

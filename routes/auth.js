@@ -4,12 +4,13 @@ const bcrypt=require('bcrypt');
 const jwt=require('jsonwebtoken')
 
 const users = require("../models/usuario");
+const rol = require("../models/rol");
 
 router.post("/register", async (req, res) => {
-  const { usuario, email, clave } = req.body;
+  const { usuario, email, clave, roles } = req.body;
 
   if (usuario === "" || email === "") {
-    return res.status(404).json({ message: "porfavor rellenar campos" });
+    return res.status(404).json({ message: "Por favor rellenar campos" });
   }
 
   try {
@@ -32,18 +33,21 @@ router.post("/register", async (req, res) => {
   }
 
   try {
-
     const newUsuario = await users.create({
-        usuario,
-        email,
-        clave
+      usuario,
+      email,
+      clave,
+      roles   
+    },{
+      include: rol
     });
-    return res.status(200).json({ menssage: "usuario registrado" });
+
+
+    return res.status(200).json({ message: "Usuario registrado" });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
 });
-
 
 router.post("/login", async (req, res) => {
     const { usuario, clave } = req.body;
