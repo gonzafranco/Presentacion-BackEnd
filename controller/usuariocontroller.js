@@ -4,8 +4,15 @@ const Usuario = require("../models/usuario");
 
 exports.getUsuarios = async (req, res) => {
     try {
+        console.log('entro a usuarios');
         const usuarios = await Usuario.findAll();
         
+        console.log('veo usuarios');
+        console.log(usuarios);
+
+
+        console.log('cierro');
+
          res.status(200).json(usuarios);
     } catch (error) {
         return res.status(500).json({ message: error.message });
@@ -32,6 +39,8 @@ exports.getUsuario = async (req, res) => {
 
 exports.updateUsuario = async (req, res) => {
     try {
+
+        
         const { usuario_id } = req.params;
 
         const { usuario, clave } = req.body;
