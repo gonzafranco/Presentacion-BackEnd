@@ -14,12 +14,10 @@ const { verifyToken, esAdmin } = require("../controller/auth-controller");
 
 router.get("/", [verifyToken, esAdmin], getUsuarios);
 
-
-
 router.put("/:usuario_id", [verifyToken, esAdmin], updateUsuario);
 
 router.delete("/:usuario_id", [verifyToken, esAdmin], deleteUsuario);
 
-router.get("/:usuario_id", getUsuario);
+
 
 module.exports = router;

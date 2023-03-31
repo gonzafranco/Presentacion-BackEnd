@@ -3,13 +3,19 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+var cors = require('cors');
 const sequelize = require('./database/database');
 const usuario = require('./models/usuario');
+const tarea = require('./models/tarea');
+const rol = require('./models/rol');
 
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
-let authRouter=require('./routes/auth');
+var tareaRouter = require('./routes/tarea');
+let authRouter= require('./routes/auth');
+let rolRouter = require('./routes/rol');
+
 
 var app = express();
 
@@ -22,10 +28,14 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(cors());
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use('/tarea', tareaRouter);
 app.use('/auth',authRouter);
+app.use('/rol',rolRouter);
+
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
