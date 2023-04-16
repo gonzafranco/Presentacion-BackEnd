@@ -13,11 +13,11 @@ exports.getTareas = async (req, res) => {
     }
 };
 
-exports.getTarea = async (req, res) => {
+exports.getTareasUsuario = async (req, res) => {
 
     try {
-        const { id } = req.params;
-        const tarea = await Tarea.findOne({ where: { id } });
+        const { usuarioId } = req.params;
+        const tarea = await Tarea.findAll({ where: { usuarioId } });
 
         if (!tarea) {
             return res.status(404).json({ message: "Tarea no existe" })
@@ -32,7 +32,8 @@ exports.getTarea = async (req, res) => {
 exports.createTarea = async (req, res) => {
     try {
         const { cuerpo,usuarioId } = req.body;
-        const busqueda = Usuario.findOne({ where: { usuarioId } })
+        const id = usuarioId
+        const busqueda =  await Usuario.findOne({ where: { id } })
 
 
         if(busqueda){
