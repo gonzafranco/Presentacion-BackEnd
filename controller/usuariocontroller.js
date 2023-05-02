@@ -1,4 +1,5 @@
 const Usuario = require("../models/usuario");
+const { param } = require("../routes/users");
 
 
 
@@ -22,7 +23,13 @@ exports.getUsuarios = async (req, res) => {
 exports.getUsuario = async (req, res) => {
 
     try {
-        const { id } = req.params;
+
+        
+        console.log(req.params.usuario_id);
+       
+        const id  = req.params.usuario_id;
+    
+
         const usuario = await Usuario.findOne({ where: { id } });
 
         if (!usuario) {
@@ -35,16 +42,13 @@ exports.getUsuario = async (req, res) => {
 };
 
 
-
-
-
 exports.updateUsuario = async (req, res) => {
     try {
         const { usuario_id } = req.params;
 
         const { usuario, clave } = req.body;
 
-        const usuario_s = await Usuario.findByPk(id);
+        const usuario_s = await Usuario.findByPk(usuario_id);
         usuario_s.usuario = usuario;
         usuario_s.clave = clave;
         await usuario_s.save();

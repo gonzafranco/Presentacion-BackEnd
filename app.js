@@ -10,12 +10,11 @@ const tarea = require('./models/tarea');
 const rol = require('./models/rol');
 
 
-var indexRouter = require('./routes/index');
+
 var usersRouter = require('./routes/users');
 var tareaRouter = require('./routes/tarea');
 let authRouter= require('./routes/auth');
-let rolRouter = require('./routes/rol');
-
+let adminRouter = require('./routes/admin');
 
 var app = express();
 
@@ -30,11 +29,11 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(cors());
 
-app.use('/', indexRouter);
+
 app.use('/users', usersRouter);
 app.use('/tarea', tareaRouter);
 app.use('/auth',authRouter);
-app.use('/rol',rolRouter);
+app.use('/admin',adminRouter);
 
 
 // catch 404 and forward to error handler
