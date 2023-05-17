@@ -1,8 +1,10 @@
-const Sequelize = require('sequelize')
-const sequelize= require('../database/database')
+const Sequelize = require("sequelize");
+const sequelize = require("../database/database");
+
 
 const tarea = require('./tarea')
 const rol = require('./rol')
+
 
 
 const {DataTypes}=require('sequelize')
@@ -53,6 +55,7 @@ const UsuarioRol = sequelize.define('usuario_rol', {},{timestamps:false});
 
 Usuario.belongsToMany(rol, { through: UsuarioRol });
 rol.belongsToMany(Usuario, { through: UsuarioRol });
+
 
 
 module.exports = Usuario;

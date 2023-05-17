@@ -88,3 +88,11 @@ exports.deleteRol = async (req, res) => {
         return res.status(500).json({ message: error.message });
     }
 };
+
+
+exports.setUsuarioRol= async (req,res)=>
+{
+
+    
+
+}

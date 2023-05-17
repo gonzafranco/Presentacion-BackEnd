@@ -1,11 +1,19 @@
 const Usuario = require("../models/usuario");
+const { param } = require("../routes/users");
 
 
 
 exports.getUsuarios = async (req, res) => {
     try {
+        console.log('entro a usuarios');
         const usuarios = await Usuario.findAll();
         
+        console.log('veo usuarios');
+        console.log(usuarios);
+
+
+        console.log('cierro');
+
          res.status(200).json(usuarios);
     } catch (error) {
         return res.status(500).json({ message: error.message });
@@ -15,7 +23,13 @@ exports.getUsuarios = async (req, res) => {
 exports.getUsuario = async (req, res) => {
 
     try {
-        const { id } = req.params;
+
+        
+        console.log(req.params.usuario_id);
+       
+        const id  = req.params.usuario_id;
+    
+
         const usuario = await Usuario.findOne({ where: { id } });
 
         if (!usuario) {
@@ -28,29 +42,13 @@ exports.getUsuario = async (req, res) => {
 };
 
 
-exports.createUsuario = async (req, res) => {
-    try {
-        const { usuario, clave } = req.body;
-
-        const newUsuario = await Usuario.create({
-            usuario,
-            clave
-        });
-
-        res.status(200).send(newUsuario);
-    } catch (error) {
-        return res.status(500).json({ message: error.message });
-    }
-};
-
-
 exports.updateUsuario = async (req, res) => {
     try {
-        const { id } = req.params;
+        const { usuario_id } = req.params;
 
         const { usuario, clave } = req.body;
 
-        const usuario_s = await Usuario.findByPk(id);
+        const usuario_s = await Usuario.findByPk(usuario_id);
         usuario_s.usuario = usuario;
         usuario_s.clave = clave;
         await usuario_s.save();
