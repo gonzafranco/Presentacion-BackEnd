@@ -46,7 +46,6 @@ router.post("/register", async (req, res) => {
       }
     );
 
-
     return res.status(200).json({ message: "Usuario registrado" });
   } catch (error) {
     return res.status(500).json({ message: error.message });
@@ -62,7 +61,7 @@ router.post("/login", async (req, res) => {
 
   try {
     usuarioExiste = await users.findOne({ where: { usuario } });
-      userData = await users.findOne({where: {usuario}});
+    userData = await users.findOne({ where: { usuario } });
 
     if (!usuarioExiste) {
       return res.status(404).json({ message: "Usuario no existe" });
@@ -96,22 +95,18 @@ router.post("/login", async (req, res) => {
     error: null,
     data: { token },
   });
-    const validPassword = await bcrypt.compare(req.body.clave, usuarioExiste.clave);
-    if (!validPassword) {
-      return res.status(400).json({ error: 'contraseña no válida' });
-    }
-    
-    const token = jwt.sign({
-        usuario: userData.usuario,
-        id: userData.id,
-        mail : userData.email
-    }, process.env.TOKEN_SECRET)
-    
-    res.header('auth-token', token).json({
-        error: null,
-        data: {token}
-    })
-  
+  const validPassword = await bcrypt.compare(
+    req.body.clave,
+    usuarioExiste.clave
+  );
+  if (!validPassword) {
+    return res.status(400).json({ error: "contraseña no válida" });
+  }
+
+  res.header("auth-token", token).json({
+    error: null,
+    data: { token },
+  });
 });
 
 module.exports = router;
