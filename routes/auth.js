@@ -32,11 +32,15 @@ router.post("/register", async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 
+  const claveHash = await encriptarContrasena(clave);
+
+  console.log(claveHash);
+  
   try {
     const newUsuario = await users.create({
         usuario,
         email,
-        clave
+        clave: claveHash
     });
 
 
@@ -48,6 +52,7 @@ router.post("/register", async (req, res) => {
 
 router.post("/login", async (req, res) => {
   const { usuario, clave } = req.body;
+
   let usuarioExiste;
   if (usuario === "" || clave === "") {
     return res.status(404).json({ message: "porfavor rellenar campos" });
@@ -63,17 +68,12 @@ router.post("/login", async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 
-  //quitar cuando se encrypte contraceña
-  if (req.body.clave != usuarioExiste.clave) {
-    return res.status(400).json({ error: "contraseña no válida" });
-  }
-
   //cuando se guarde la constraseña encryptada se habilita
-  // const validPassword = await bcrypt.compare(req.body.clave, usuarioExiste.clave);
-  // if (!validPassword){
-  //     return res.status(400).json({ error: 'contraseña no válida' });
-  // }
-
+  const validPassword = await bcrypt.compare(clave, usuarioExiste.clave);
+  if (!validPassword){
+      return res.status(400).json({ error: 'contraseña no válida' });
+  }
+  console.log("Valor de TOKEN_SECRET:", process.env.TOKEN_SECRET);
   //traer el rol de la base de datos
   const token = jwt.sign(
     {
@@ -89,5 +89,21 @@ router.post("/login", async (req, res) => {
     data: { token },
   });
 });
+
+async function encriptarContrasena(contrasena) {
+  try {
+    // Generar la sal
+    const salt = await bcrypt.genSalt(10);
+
+    // Generar el hash de la contraseña
+    const hash = await bcrypt.hash(contrasena, salt);
+
+    return hash;
+  } catch (error) {
+    console.error('Error al encriptar la contraseña:', error);
+    throw error;
+  }
+}
+
 
 module.exports = router;
