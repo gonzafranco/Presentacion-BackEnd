@@ -89,10 +89,7 @@ router.post("/login", async (req, res) => {
     error: null,
     data: { token },
   });
-  const validPassword = await bcrypt.compare(
-    req.body.clave,
-    usuarioExiste.clave
-  );
+
   if (!validPassword) {
     return res.status(400).json({ error: "contraseña no válida" });
   }
