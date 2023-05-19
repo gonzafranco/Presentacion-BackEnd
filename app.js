@@ -8,6 +8,7 @@ const sequelize = require('./database/database');
 const usuario = require('./models/usuario');
 const tarea = require('./models/tarea');
 const rol = require('./models/rol');
+require('dotenv').config();
 
 
 
