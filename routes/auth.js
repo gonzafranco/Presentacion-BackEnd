@@ -55,7 +55,7 @@ router.post("/login", async (req, res) => {
 
   let usuarioExiste;
   if (usuario === "" || clave === "") {
-    return res.status(404).json({ message: "porfavor rellenar campos" });
+    return res.status(404).json({ message: "Por favor rellenar campos" });
   }
 
   try {
@@ -69,18 +69,17 @@ router.post("/login", async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 
-  //cuando se guarde la constraseña encryptada se habilita
   const validPassword = await bcrypt.compare(clave, usuarioExiste.clave);
-  if (!validPassword){
-      return res.status(400).json({ error: 'contraseña no válida' });
+  if (!validPassword) {
+    return res.status(400).json({ error: 'Contraseña no válida' });
   }
-  console.log("Valor de TOKEN_SECRET:", process.env.TOKEN_SECRET);
-  //traer el rol de la base de datos
+
   const token = jwt.sign(
     {
       name: usuarioExiste.usuario,
       id: usuarioExiste.usuario_id,
       rol: ["admin", "jefe"],
+      exp: Math.floor(Date.now() / 1000) + (5 * 60)  // Expira en 5 minuto
     },
     process.env.TOKEN_SECRET
   );
