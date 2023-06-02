@@ -3,29 +3,45 @@ const Rol = require("../models/rol");
 
 
 
-
-exports.getRoles = async (req, res) => {
+//retorna los roles de un usuario
+exports.getRoles = async (userId) => {
     try {
-        const Roles = await Rol.findAll();
-        
-         res.status(200).json(Roles);
+        const usuario = await Usuario.findByPk(userId);
+        const roles = await usuario.getRols({ raw: true }); 
+          
+     return roles.map((rol) => rol.nombre);
+       
+
+} catch (error) {
+    console.log(error);
+}
+};
+
+
+
+//ver
+exports.getRoles2 = async (req, res) => {
+    try {
+        const roles = await Rol.findAll();
+        const nombres = roles.map(({ nombre }) => nombre); // Obtener solo los nombres de los roles
+        res.status(200).json(nombres);
     } catch (error) {
         return res.status(500).json({ message: error.message });
     }
+
 };
 
-exports.getRol = async (req, res) => {
-
+exports.getRol = async (id) => {
     try {
-        const { id } = req.params;
-        const rol = await Rol.findOne({ where: { id } });
+        const rol = await Rol.findByPk(id);
 
         if (!rol) {
-            return res.status(404).json({ message: "Rol no existe" })
+            throw new Error("Rol no existe");
         }
-        res.status(200).json(rol);
+        
+        return rol;
     } catch (error) {
-        return res.status(500).json({ message: error.message });
+        throw error;
     }
 };
 
@@ -81,13 +97,13 @@ exports.deleteRol = async (req, res) => {
                 id,
             },
         });
-        res.json({message:`Tarea con id ${id} eliminado`});
-        res.sendStatus(204);
-        
+
+        res.sendStatus(204); // Enviar solo el código de estado 204 sin contenido
     } catch (error) {
         return res.status(500).json({ message: error.message });
     }
 };
+
 
 
 exports.setUsuarioRol= async (req,res)=>

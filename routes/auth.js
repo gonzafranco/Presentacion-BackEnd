@@ -4,7 +4,8 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
 const users = require("../models/usuario");
-const rol = require("../models/rol");
+const Rol = require("../models/rol");
+const rolesController = require('../controller/rolcontroller')
 
 router.post("/register", async (req, res) => {
   const { usuario, email, clave, roles } = req.body;
@@ -44,6 +45,15 @@ router.post("/register", async (req, res) => {
         clave: claveHash
     });
 
+    //rol 1 es usuario comun
+    let rol = await Rol.findByPk(1);
+    
+    if (rol) {
+      await newUsuario.addRol(rol);
+    }
+    
+
+
     return res.status(200).json({ message: "Usuario registrado" });
   } catch (error) {
     return res.status(500).json({ message: error.message });
@@ -74,11 +84,17 @@ router.post("/login", async (req, res) => {
     return res.status(400).json({ error: 'Contraseña no válida' });
   }
 
+  
+  console.log(usuarioExiste.id);
+  
+  const roles = await rolesController.getRoles(usuarioExiste.id);
+
+
   const token = jwt.sign(
     {
       name: usuarioExiste.usuario,
       id: usuarioExiste.usuario_id,
-      rol: ["admin", "jefe"],
+      rol: roles,
       exp: Math.floor(Date.now() / 1000) + (5 * 60)  // Expira en 5 minuto
     },
     process.env.TOKEN_SECRET
