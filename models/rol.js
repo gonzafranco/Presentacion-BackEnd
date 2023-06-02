@@ -13,7 +13,8 @@ const Rol = sequelize.define('rol', {
       type: DataTypes.STRING,
       allowNull: false
     }
-  },{
+  },
+  {
     timestamps: false
   });
 

@@ -36,10 +36,10 @@ const Usuario = sequelize.define('usuario', {
     type: DataTypes.DATE,
     defaultValue: Sequelize.fn('now')
   }
-}, {
+}, 
+{
   timestamps: false
 });
-
 
 Usuario.hasMany(tarea,{
     foreingKey: 'usuarioId',
