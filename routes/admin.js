@@ -25,4 +25,6 @@ router.get("/rol/:id", [verifyToken, esAdmin],  getRol);
 router.put("/roles/actualizar/:id", [verifyToken, esAdmin],  updateRol);
 router.delete("/rol/borrar/:id", [verifyToken, esAdmin],  deleteRol);
 
+
+
 module.exports = router;
