@@ -5,7 +5,7 @@ module.exports = {
     
     env: {
       NODE_ENV: "development",
-      
+      TOKEN_SECRET: 'secret',
     },
     env_production: {
       NODE_ENV: "production",

@@ -1,57 +1,9 @@
 var express = require("express");
 var router = express.Router();
-const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
 
-const users = require("../models/usuario");
-const Rol = require("../models/rol");
-const rolesController = require('../controller/rolcontroller')
 
-router.post("/register", async (req, res) => {
-  const { usuario, email, clave, roles } = req.body;
 
-  if (usuario === "" || email === "") {
-    return res.status(404).json({ message: "Por favor rellenar campos" });
-  }
 
-  try {
-    const usuarioExiste = await users.findOne({ where: { usuario } });
-
-    if (usuarioExiste) {
-      return res.status(404).json({ message: "Usuario existe" });
-    }
-  } catch (error) {
-    return res.status(500).json({ message: error.message });
-  }
-
-  try {
-    const isEmailExist = await users.findOne({ where: { email } });
-    if (isEmailExist) {
-      return res.status(400).json({ error: "Email ya registrado" });
-    }
-  } catch (error) {
-    return res.status(500).json({ message: error.message });
-  }
-  const claveHash = await encriptarContrasena(clave);
-
-  console.log(claveHash);
-  
-  try {
-    const hashedClave = await bcrypt.hash(clave, 10);
-    const newUsuario = await users.create(
-      {
-        usuario,
-        email,
-        clave: claveHash
-    });
-
-    //rol 1 es usuario comun
-    let rol = await Rol.findByPk(1);
-    
-    if (rol) {
-      await newUsuario.addRol(rol);
-    }
-    
 
 
     return res.status(200).json({ message: "Usuario registrado" });
@@ -70,7 +22,6 @@ router.post("/login", async (req, res) => {
 
   try {
     usuarioExiste = await users.findOne({ where: { usuario } });
-    userData = await users.findOne({ where: { usuario } });
 
     if (!usuarioExiste) {
       return res.status(404).json({ message: "Usuario no existe" });
@@ -99,15 +50,6 @@ router.post("/login", async (req, res) => {
     },
     process.env.TOKEN_SECRET
   );
-
-  res.header("auth-token", token).json({
-    error: null,
-    data: { token },
-  });
-
-  if (!validPassword) {
-    return res.status(400).json({ error: "contraseña no válida" });
-  }
 
   res.header("auth-token", token).json({
     error: null,
