@@ -16,14 +16,19 @@ router.get("/usuario/:usuario_id", [verifyToken, esAdmin], getUsuario);
 router.put("/usuario/actualizar/:usuario_id",[verifyToken, esAdmin],updateUsuario);
 router.delete("/usuario/borrar/:usuario_id",[verifyToken, esAdmin],deleteUsuario);
 
-//rutas administracion de roles
-const {getRoles,getRol,createRol,updateRol,deleteRol,} = require("../controller/rolcontroller");
+//roles actualiza y elimina roles del usuario
 
-router.get("/roles", [verifyToken, esAdmin],  getRoles);
-router.get("/rol/:id", [verifyToken, esAdmin],  getRol);
-//router.post("/", createRol);
-router.put("/roles/actualizar/:id", [verifyToken, esAdmin],  updateRol);
-router.delete("/rol/borrar/:id", [verifyToken, esAdmin],  deleteRol);
+
+
+
+
+//tarea crea, borra, ver, actualiza, elimina lo mismo que jefe.
+
+
+
+
+
+
 
 
 
