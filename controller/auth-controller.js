@@ -8,8 +8,8 @@ const Rol = require("../models/rol");
 
 // middleware to validate token (rutas protegidas)
 exports.verifyToken = async (req, res, next) => {
-  const token = req.header("auth-token");
-
+  let token = req.header("auth-token");
+  token = req.header ("auth-token",actualizarRolesToken(token));
   try {
     const decodedToken = verifyToken(token);
 
@@ -28,6 +28,7 @@ exports.verifyToken = async (req, res, next) => {
 if(!shouldRenewToken(decodedToken.exp))
 {
  
+  token = this.actualizarRolesToken(token)
   console.log('el token todavia no expira');
   console.log('Renewed Token:', decodedToken);
   const expirationDate = new Date(decodedToken.exp * 1000);
@@ -109,7 +110,7 @@ exports.register = async (req, res) => {
 
     //rol 1 es usuario comun
     let rol = await Rol.findByPk(1);
-    
+
     if (rol) {
       await newUsuario.addRol(rol);
     }
@@ -154,8 +155,8 @@ exports.login = async (req, res) => {
 
   const token = jwt.sign(
     {
-      name: usuarioExiste.usuario,
-      id: usuarioExiste.usuario_id,
+      usuario: usuarioExiste.usuario,
+      id: usuarioExiste.id,
       rol: roles,
       exp: Math.floor(Date.now() / 1000) + (5 * 60)  // Expira en 5 minuto
     },
@@ -167,6 +168,21 @@ exports.login = async (req, res) => {
     data: { token },
   });
 };
+
+actualizarRolesToken = async (token)=>{
+
+  //const token = req.header("auth-token");
+  const decodedToken = verifyToken(token);
+
+  const roles = await rolesController.getRoles(decodedToken.id);
+  const renewedToken= jwt.sign({ ...decodedToken, rol: roles }, process.env.TOKEN_SECRET);
+  
+  console.log('llega a actualizar los roles');
+
+  return renewedToken;
+  
+}
+
 
 async function encriptarContrasena(contrasena) {
   try {
