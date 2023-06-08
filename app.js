@@ -14,7 +14,7 @@ require('dotenv').config();
 
 
 var usersRouter = require('./routes/users');
-var tareaRouter = require('./routes/tarea');
+
 let authRouter= require('./routes/auth');
 let adminRouter = require('./routes/admin');
 
@@ -33,7 +33,7 @@ app.use(cors());
 
 
 app.use('/users', usersRouter);
-app.use('/tarea', tareaRouter);
+
 app.use('/auth',authRouter);
 app.use('/admin',adminRouter);
 

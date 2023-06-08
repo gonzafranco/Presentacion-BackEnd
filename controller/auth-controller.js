@@ -118,7 +118,7 @@ exports.verifyToken = async (req, res, next) => {
     const decodedToken = jwt.verify(token, process.env.TOKEN_SECRET);
 
     if (shouldRenewToken(decodedToken.exp)) {
-      const renewedToken = await actualizarRolesToken(decodedToken); // Actualizar roles del token
+      const renewedToken = await actualizarRolesYTiempoToken(decodedToken); // Actualizar roles del token
       req.user = jwt.verify(renewedToken, process.env.TOKEN_SECRET); // Verificar el token actualizado con los roles
 
       res.header('auth-token', renewedToken);
@@ -163,13 +163,18 @@ function shouldRenewToken(exp) {
 }
 
 // Renovar el token con roles actualizados
-async function actualizarRolesToken(decodedToken) {
+async function actualizarRolesYTiempoToken(decodedToken) {
   console.log('Entrando a actualizarRolesToken');
   console.log('Token decodificado:', decodedToken);
 
   try {
     const roles = await rolesController.getRoles(decodedToken.id);
-    const renewedToken = jwt.sign({ ...decodedToken, rol: roles }, process.env.TOKEN_SECRET);
+
+    // Obtener la fecha de expiración actualizada (5 minutos adicionales)
+    const expirationDate = Math.floor(Date.now() / 1000) + (5 * 60); // Agregar 300 segundos (5 minutos)
+
+    // Generar un nuevo token con roles actualizados y tiempo de expiración actualizado
+    const renewedToken = jwt.sign({ ...decodedToken, rol: roles, exp: expirationDate }, process.env.TOKEN_SECRET);
     console.log('Token renovado:', renewedToken);
 
     return renewedToken;
