@@ -6,7 +6,7 @@ exports.cargarRoles = async  ()=> {
       const roles = [
         { id: 2, nombre: 'admin' },
         { id: 1, nombre: 'usuario' },
-        // { id: 2, nombre: 'Editor' },
+        { id: 3, nombre: 'jefe' },
         // { id: 3, nombre: 'Invitado' }
       ];
   
