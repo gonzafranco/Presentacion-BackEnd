@@ -1,114 +1,95 @@
 const Usuario = require("../models/usuario");
 const Rol = require("../models/rol");
+const jwt = require("jsonwebtoken");
+const jwt_decode = require("jwt-decode");
+const usuarioController = require('../controller/usuariocontroller')
+const { param } = require("../routes/users");
 
+exports.getRolesRutas = async (req, res) => {
+  console.log(req.params.usuario_id);
+  const usuarioModificar = req.params.usuario_id;
+  try {
+    const usuario = await Usuario.findByPk(usuarioModificar);
+    const roles = await usuario.getRols({ raw: true });
 
-
-//retorna los roles de un usuario
-exports.getRoles = async (userId) => {
-    try {
-        const usuario = await Usuario.findByPk(userId);
-        const roles = await usuario.getRols({ raw: true }); 
-          
-     return roles.map((rol) => rol.nombre);
-       
-
-} catch (error) {
+    res.status(200).json(roles.map((rol) => rol.nombre));
+  } catch (error) {
     console.log(error);
-}
+  }
 };
 
+//retorna los roles de un usuario no se usa en rutas
+exports.getRoles = async (userId) => {
+  try {
+    const usuario = await Usuario.findByPk(userId);
+    const roles = await usuario.getRols({ raw: true });
 
-
-//ver
-exports.getRoles2 = async (req, res) => {
-    try {
-        const roles = await Rol.findAll();
-        const nombres = roles.map(({ nombre }) => nombre); // Obtener solo los nombres de los roles
-        res.status(200).json(nombres);
-    } catch (error) {
-        return res.status(500).json({ message: error.message });
-    }
-
+    return roles.map((rol) => rol.nombre);
+  } catch (error) {
+    console.log(error);
+  }
 };
 
-exports.getRol = async (id) => {
-    try {
-        const rol = await Rol.findByPk(id);
-
-        if (!rol) {
-            throw new Error("Rol no existe");
-        }
-        
-        return rol;
-    } catch (error) {
-        throw error;
-    }
-};
-
-
-exports.createRol = async (req, res) => {
-    try {
-        const { nombre } = req.body;
-
-
-        try {
-            const rolExiste = await Rol.findOne({ where: { nombre } });
-        
-            if (rolExiste) {
-              return res.status(404).json({ message: "rol existe" });
-            }
-          } catch (error) {
-            return res.status(500).json({ message: error.message });
-          }
-
-        const newRol = await Rol.create({
-            nombre
-        });
-        res.status(200).json(newRol);
-    } catch (error) {
-        return res.status(500).json({ message: error.message });
-    }
-};
-
+//le paso un usuario y le cambio los roles
+//probar
 exports.updateRol = async (req, res) => {
-    try {
-        const { id } = req.params;
 
-        const { nombre } = req.body;
 
-        const nombre_s = await Rol.findByPk(id);
-        nombre_s.nombre = nombre;
+  try {
 
-        await nombre_s.save();
+    const id= req.params.usuario_id;
+    let rols = ''
+    const usuarioModificar = await usuarioController.getUsuario(id)
+    console.log('---------------------------------------');
+    console.log(usuarioModificar);
+    const admin = req.body.admin; // Verificar si la opción 2 fue seleccionada
+    const jefe = req.body.jefe ;
+    //recibir el id a actualizar.
+    console.log(admin);
+    console.log(jefe);
 
-        res.status(200).json(nombre_s);
-    } catch (error) {
-        return res.status(500).json({ message: error.message });
+
+
+
+    if (admin) {
+      let rol = await Rol.findByPk(2);
+
+      if (rol) {
+        await usuarioModificar.addRol(rol);
+      }
+      rols= rols + 'agrego admin '
     }
-};
+    if (!admin) {
+      let rol = await Rol.findByPk(2);
 
-
-exports.deleteRol = async (req, res) => {
-    try {
-        const { id } = req.params;
-
-        await Rol.destroy({
-            where: {
-                id,
-            },
-        });
-
-        res.sendStatus(204); // Enviar solo el código de estado 204 sin contenido
-    } catch (error) {
-        return res.status(500).json({ message: error.message });
+      if (rol) {
+        await usuarioModificar.removeRol(rol);
+      }
+      rols= rols + 'quito admin '
     }
+
+    if (jefe) {
+        let rol = await Rol.findByPk(3);
+
+      if (rol) {
+        await usuarioModificar.addRol(rol);
+      }
+      rols= rols + 'agrego jefe '
+    }
+    if (!jefe) {
+      let rol = await Rol.findByPk(3);
+
+      if (rol) {
+        await usuarioModificar.removeRol(rol);
+      }
+      rols= rols + 'quito jefe '
+    }
+
+
+
+   res.status(200).json({ message: 'se modificaron roles: ' + rols });
+   
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
 };
-
-
-
-exports.setUsuarioRol= async (req,res)=>
-{
-
-    
-
-}

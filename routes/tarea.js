@@ -10,5 +10,3 @@ router.get("/:usuarioId", getTareasUsuario);
 router.post("/", createTarea);
 router.put("/:id", updateTarea);
 router.delete("/:id", deleteTarea);
-
-module.exports = router;

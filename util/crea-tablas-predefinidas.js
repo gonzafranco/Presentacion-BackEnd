@@ -4,9 +4,9 @@ exports.cargarRoles = async  ()=> {
     try {
       // Cargar cuatro roles con el ID específico para el rol "Usuario"
       const roles = [
-        { id: 2, nombre: 'Administrador' },
-        { id: 1, nombre: 'Usuario' },
-        // { id: 2, nombre: 'Editor' },
+        { id: 2, nombre: 'admin' },
+        { id: 1, nombre: 'usuario' },
+        { id: 3, nombre: 'jefe' },
         // { id: 3, nombre: 'Invitado' }
       ];
   

@@ -20,7 +20,26 @@ exports.getUsuarios = async (req, res) => {
     }
 };
 
-exports.getUsuario = async (req, res) => {
+//consulta codigo
+
+exports.getUsuario = async (id) => {
+    try {
+        const usuario = await Usuario.findOne({ where: { id } });
+
+        if (!usuario) {
+            throw new Error('No existe un usuario con el ID proporcionado');
+        }
+
+        return usuario;
+    } catch (error) {
+        throw new Error(`Error al obtener el usuario: ${error.message}`);
+    }
+};
+
+
+
+//ruta
+exports.getUsuarioRuta = async (req, res) => {
 
     try {
 

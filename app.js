@@ -56,7 +56,7 @@ app.use(function (err, req, res, next) {
 
 async function arrancarBD() {
   try {
-    await sequelize.sync({ force: true});
+    await sequelize.sync({ force: false});
     creaTablas.cargarRoles();
     console.log('Connection has been established successfully.');
   } catch (error) {

@@ -13,7 +13,7 @@ const Tarea = sequelize.define(
       },
       cuerpo: {
         type: DataTypes.STRING,
-      },
+      },//finalizado cambiar por estado(finalizado,en proceso, no tomada)
       finalizado: {
         type: DataTypes.BOOLEAN,
         defaultValue: false,
