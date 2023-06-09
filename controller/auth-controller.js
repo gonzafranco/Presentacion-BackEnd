@@ -200,8 +200,8 @@ async function encriptarContrasena(contrasena) {
 }
 
 
-
-exports.esAdmin = (req, res, next) => {
+//es admin para rutas
+exports.esAdminRuta = (req, res, next) => {
   try {
     const token = req.header("auth-token");
     let tokenDecode = jwt_decode(token);
@@ -218,3 +218,31 @@ exports.esAdmin = (req, res, next) => {
     res.status(400).json({ error: "Acceso denegado" });
   }
 };
+exports.esUsuarioRuta = (req, res, next) => {
+  try {
+    const token = req.header("auth-token");
+    let tokenDecode = jwt_decode(token);
+    console.log('jwt decodificado');
+    console.log(tokenDecode);
+    console.log(tokenDecode.rol.includes("usuario"));
+
+    if (tokenDecode.rol.includes("usuario")) {
+      next();
+    } else {
+      res.status(400).json({ error: "Acceso denegado: se requiere rol de usuario." });
+    }
+  } catch (error) {
+    res.status(400).json({ error: "Acceso denegado" });
+  }
+};
+
+//esadmin para codigo
+exports.esAdmin = (roles) =>
+{
+return roles.includes("admin")
+}
+
+exports.esJefe = (roles) =>
+{
+  return roles.includes("jefe")
+}

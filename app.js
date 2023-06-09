@@ -56,8 +56,9 @@ app.use(function (err, req, res, next) {
 
 async function arrancarBD() {
   try {
-    await sequelize.sync({ force: false});
+    await sequelize.sync({ force: true});
     creaTablas.cargarRoles();
+    creaTablas.cargarAdmin();
     console.log('Connection has been established successfully.');
   } catch (error) {
     console.error('Unable to connect to the database:', error);

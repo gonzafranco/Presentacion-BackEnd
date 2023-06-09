@@ -3,11 +3,19 @@ const Usuario = require("../models/usuario");
 const jwt = require("jsonwebtoken");
 const jwt_decode = require("jwt-decode");
 
+const athController = require('../controller/auth-controller')
 const usuarioController = require("../controller/usuariocontroller");
+
+const httpConst= require('http2').constants
 
 exports.getTareas = async (req, res) => {
   try {
     const Tareas = await Tarea.findAll();
+
+    if(!Tareas)
+    {
+        res.status(500).json({message: 'no hay tareas'})
+    }
 
     res.status(200).json(Tareas);
   } catch (error) {
@@ -57,7 +65,7 @@ exports.updateTarea = async (req, res) => {
 
     await cuerpo_s.save();
 
-    res.status(200).json(cuerpo_s);
+    res.status(httpConst.HTTP2_S).json(cuerpo_s);
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
@@ -117,3 +125,33 @@ exports.misTareas = async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 };
+
+
+exports.otenerTareasAcargo = async(req, res) =>{
+    const token = req.header("auth-token");
+    let tokenDecode = jwt_decode(token);
+    
+    try {
+        const TareasSinAsignar = await Tarea.findAll({where:{usuarioId: null}});
+        if(!TareasSinAsignar)
+        {
+        res.status(200).json({message: 'no hay tareas sin asignar'});
+
+        }
+    
+        if( athController.esAdmin(tokenDecode.rol) )
+        {
+
+            res
+        }
+
+        if( athController.esJefe(tokenDecode.rol))
+        {
+            
+            res
+        }
+        res.status(500).json({message: 'no se pudo devolver los acargo'});
+      } catch (error) {
+        return res.status(500).json({ message: error.message });
+      }
+}

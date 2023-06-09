@@ -1,4 +1,5 @@
 const Rol = require("../models/rol");
+const Usuario= require("../models/usuario")
 
 exports.cargarRoles = async  ()=> {
     try {
@@ -19,3 +20,30 @@ exports.cargarRoles = async  ()=> {
     }
   }
   
+
+
+exports.cargarAdmin = async () => {
+  try {
+    const adminData = {
+      usuario: 'admin',
+      email: 'admin@admin',
+      clave: '$2b$10$fHDI0JmztupXp/XST3wXAerzx/L1bHc62BhhezvMpL9t4ji6hsu36'
+    };
+
+    // Insertar el usuario en la base de datos
+    const admin = await Usuario.create(adminData, { validate: true });
+
+    // Buscar el rol con ID 2
+    const rol = await Rol.findByPk(2);
+
+    if (rol) {
+      // Asignar el rol al usuario
+      await admin.addRol(rol);
+    }
+
+    console.log('Admin cargado exitosamente.');
+  } catch (error) {
+    console.error('Error al cargar el admin:', error);
+  }
+};
+
