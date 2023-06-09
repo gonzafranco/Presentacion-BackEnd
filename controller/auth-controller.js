@@ -118,7 +118,7 @@ exports.verifyToken = async (req, res, next) => {
     const decodedToken = jwt.verify(token, process.env.TOKEN_SECRET);
 
     if (shouldRenewToken(decodedToken.exp)) {
-      const renewedToken = await actualizarRolesToken(decodedToken); // Actualizar roles del token
+      const renewedToken = await actualizarRolesYTiempoToken(decodedToken); // Actualizar roles del token
       req.user = jwt.verify(renewedToken, process.env.TOKEN_SECRET); // Verificar el token actualizado con los roles
 
       res.header('auth-token', renewedToken);
@@ -163,13 +163,18 @@ function shouldRenewToken(exp) {
 }
 
 // Renovar el token con roles actualizados
-async function actualizarRolesToken(decodedToken) {
+async function actualizarRolesYTiempoToken(decodedToken) {
   console.log('Entrando a actualizarRolesToken');
   console.log('Token decodificado:', decodedToken);
 
   try {
     const roles = await rolesController.getRoles(decodedToken.id);
-    const renewedToken = jwt.sign({ ...decodedToken, rol: roles }, process.env.TOKEN_SECRET);
+
+    // Obtener la fecha de expiración actualizada (5 minutos adicionales)
+    const expirationDate = Math.floor(Date.now() / 1000) + (5 * 60); // Agregar 300 segundos (5 minutos)
+
+    // Generar un nuevo token con roles actualizados y tiempo de expiración actualizado
+    const renewedToken = jwt.sign({ ...decodedToken, rol: roles, exp: expirationDate }, process.env.TOKEN_SECRET);
     console.log('Token renovado:', renewedToken);
 
     return renewedToken;
@@ -195,8 +200,8 @@ async function encriptarContrasena(contrasena) {
 }
 
 
-
-exports.esAdmin = (req, res, next) => {
+//es admin para rutas
+exports.esAdminRuta = (req, res, next) => {
   try {
     const token = req.header("auth-token");
     let tokenDecode = jwt_decode(token);
@@ -213,3 +218,31 @@ exports.esAdmin = (req, res, next) => {
     res.status(400).json({ error: "Acceso denegado" });
   }
 };
+exports.esUsuarioRuta = (req, res, next) => {
+  try {
+    const token = req.header("auth-token");
+    let tokenDecode = jwt_decode(token);
+    console.log('jwt decodificado');
+    console.log(tokenDecode);
+    console.log(tokenDecode.rol.includes("usuario"));
+
+    if (tokenDecode.rol.includes("usuario")) {
+      next();
+    } else {
+      res.status(400).json({ error: "Acceso denegado: se requiere rol de usuario." });
+    }
+  } catch (error) {
+    res.status(400).json({ error: "Acceso denegado" });
+  }
+};
+
+//esadmin para codigo
+exports.esAdmin = (roles) =>
+{
+return roles.includes("admin")
+}
+
+exports.esJefe = (roles) =>
+{
+  return roles.includes("jefe")
+}

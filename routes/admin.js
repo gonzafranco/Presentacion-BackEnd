@@ -10,30 +10,34 @@ const {
   getUsuarioRuta,
 } = require("../controller/usuariocontroller");
 
-const { verifyToken, esAdmin, actualizarRolesToken } = require("../controller/auth-controller");
-const rolController = require('../controller/rolcontroller')
+const { verifyToken, esAdmin, actualizarRolesToken, esAdminRuta } = require("../controller/auth-controller");
+const rolController = require('../controller/rolcontroller');
 
-//ruta administracion de usuarios
-router.get("/usuarios", [verifyToken, esAdmin], getUsuarios);
-router.get("/usuario/:usuario_id", [verifyToken, esAdmin], getUsuarioRuta);
-router.put("/usuario/actualizar/:usuario_id",[verifyToken, esAdmin],updateUsuario);
-router.delete("/usuario/borrar/:usuario_id",[verifyToken, esAdmin],deleteUsuario);
+// Rutas de administración de usuarios
+router.get("/usuarios", [verifyToken, esAdminRuta], getUsuarios);
+router.get("/usuario/:usuario_id", [verifyToken, esAdminRuta], getUsuarioRuta);
+router.put("/usuario/actualizar/:usuario_id", [verifyToken, esAdminRuta], updateUsuario);
+router.delete("/usuario/borrar/:usuario_id", [verifyToken, esAdminRuta], deleteUsuario);
 
-//roles actualiza y elimina roles del usuario
+// Rutas de actualización y eliminación de roles del usuario
+router.get("/usuario/rol/actualizar/:usuario_id", [verifyToken, esAdminRuta], rolController.getRolesRutas);
+router.put("/usuario/rol/actualizar/:usuario_id", [verifyToken, esAdminRuta], rolController.updateRol);
 
-router.get("/usuario/rol/actualizar/:usuario_id",[verifyToken, esAdmin],rolController.getRolesRutas)
-router.put("/usuario/rol/actualizar/:usuario_id",[verifyToken, esAdmin],rolController.updateRol)
+// Rutas relacionadas con las tareas
+router.get("/tareas", [verifyToken, esAdminRuta], tareacontroller.getTareas);
+router.get("/tarea/:id", [verifyToken, esAdminRuta], tareacontroller.getTarea);
+router.post("/tarea/crear", [verifyToken, esAdminRuta], tareacontroller.createTarea);
+router.put("/tarea/actualizar/:id", [verifyToken, esAdminRuta], tareacontroller.updateTarea);
+router.delete("/tarea/borrar/:id", [verifyToken, esAdminRuta], tareacontroller.deleteTarea);
 
+//get usuarios y tareas sin asignar filtar si es jefe por los que tiene a cargo
+router.get("/tarea/obtener-a-cargo",[verifyToken, esAdminRuta], tareacontroller.otenerTareasAcargo)
 
-//tarea crea, borra, ver, actualiza, elimina lo mismo que jefe.
+// Ruta para asignar una tarea a un usuario
+//debe ser post
+router.get("/tarea/asignar/:usuario_id/:tarea_id", [verifyToken, esAdminRuta], tareacontroller.asignaTarea);
 
-router.get("/tareas",[verifyToken, esAdmin],tareacontroller.getTareas);
-router.get("/tarea/:id",[verifyToken, esAdmin], tareacontroller.getTarea);
-router.post("/crear-tarea",[verifyToken, esAdmin], tareacontroller.createTarea);
-router.put("/tarea/actualizar/:id",[verifyToken, esAdmin], tareacontroller.updateTarea);
-router.delete("/tarea/borar/:id",[verifyToken, esAdmin], tareacontroller.deleteTarea);
-
-router.get('/tarea/asignar-tarea',[verifyToken, esAdmin]) //falta implemntar
-
+// Ruta para obtener las tareas de un usuario
+router.get("/tarea/mias", [verifyToken, esAdminRuta], tareacontroller.misTareas);
 
 module.exports = router;

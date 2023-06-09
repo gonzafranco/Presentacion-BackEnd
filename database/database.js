@@ -1,6 +1,6 @@
 const { Sequelize } = require("sequelize");
 
-//config tra
+// //config tra
 // const sequelize = new Sequelize("presentacionDB", "plataforma", "plataforma", {
 //   host: "localhost",
 //   // host: 'postgres', //utilizar cuando se compila el codigo nodejs como container y se utiliza de manera colectiva en docker-compose

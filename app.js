@@ -14,7 +14,7 @@ require('dotenv').config();
 
 
 var usersRouter = require('./routes/users');
-var tareaRouter = require('./routes/tarea');
+
 let authRouter= require('./routes/auth');
 let adminRouter = require('./routes/admin');
 
@@ -33,7 +33,7 @@ app.use(cors());
 
 
 app.use('/users', usersRouter);
-app.use('/tarea', tareaRouter);
+
 app.use('/auth',authRouter);
 app.use('/admin',adminRouter);
 
@@ -56,8 +56,9 @@ app.use(function (err, req, res, next) {
 
 async function arrancarBD() {
   try {
-    await sequelize.sync({ force: false});
+    await sequelize.sync({ force: true});
     creaTablas.cargarRoles();
+    creaTablas.cargarAdmin();
     console.log('Connection has been established successfully.');
   } catch (error) {
     console.error('Unable to connect to the database:', error);
